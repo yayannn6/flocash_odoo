@@ -1,0 +1,60 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+<!--
+    <record model="ir.ui.view" id="yayan_flocash.list">
+      <field name="name">yayan_flocash list</field>
+      <field name="model">yayan_flocash.yayan_flocash</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="name"/>
+          <field name="value"/>
+          <field name="value2"/>
+        </list>
+      </field>
+    </record>
+-->
+
+    <!-- actions opening views on models -->
+<!--
+    <record model="ir.actions.act_window" id="yayan_flocash.action_window">
+      <field name="name">yayan_flocash window</field>
+      <field name="res_model">yayan_flocash.yayan_flocash</field>
+      <field name="view_mode">list,form</field>
+    </record>
+-->
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="yayan_flocash.action_server">
+      <field name="name">yayan_flocash server</field>
+      <field name="model_id" ref="model_yayan_flocash_yayan_flocash"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "list,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+<!--
+    <menuitem name="yayan_flocash" id="yayan_flocash.menu_root"/>
+-->
+    <!-- menu categories -->
+<!--
+    <menuitem name="Menu 1" id="yayan_flocash.menu_1" parent="yayan_flocash.menu_root"/>
+    <menuitem name="Menu 2" id="yayan_flocash.menu_2" parent="yayan_flocash.menu_root"/>
+-->
+    <!-- actions -->
+<!--
+    <menuitem name="List" id="yayan_flocash.menu_1_list" parent="yayan_flocash.menu_1"
+              action="yayan_flocash.action_window"/>
+    <menuitem name="Server to list" id="yayan_flocash" parent="yayan_flocash.menu_2"
+              action="yayan_flocash.action_server"/>
+-->
+  </data>
+</odoo>

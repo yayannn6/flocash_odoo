@@ -1,0 +1,10 @@
+<odoo>
+  <data noupdate="1">
+    <record id="payment_provider_flocash" model="payment.provider">
+      <field name="name">Flocash</field>
+      <field name="code">flocash</field>
+      <field name="state">test</field>
+      <field name="company_id" ref="base.main_company"/>
+    </record>
+  </data>
+</odoo>
