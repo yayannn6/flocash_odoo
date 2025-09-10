@@ -50,7 +50,7 @@ class AccountMove(models.Model):
                     "custom": str(inv.name),
                     "amount": str(inv.amount_total),
                     "orderId": str(inv.id),
-                    "currency": "KES",   # pastikan ISO3, ex: "KES"
+                    "currency": inv.currency_id.name,
                     "item_name": f"Invoice {inv.name}",
                     "item_price": str(inv.amount_total),
                     "quantity": "1",
@@ -60,7 +60,7 @@ class AccountMove(models.Model):
                 },
                 "payOption": {"id": inv.flocash_payment_option},  # sebaiknya ambil dinamis via /payoptions
                 "payer": {
-                    "country": "KE",
+                    "country": inv.partner_id.country_id.code or "US",
                     "firstName": (inv.partner_id.name).split(" ")[0],
                     "lastName": (inv.partner_id.name or "X").split(" ")[-1],
                     "mobile": inv.partner_id.phone or "",
@@ -113,3 +113,4 @@ class PaymentProvider(models.Model):
         if self.flocash_environment == "sandbox":
             return "https://sandbox.flocash.com/rest/v2"
         return "https://pay.flocash.com/rest/v2"
+
