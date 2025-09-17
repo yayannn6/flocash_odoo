@@ -181,6 +181,7 @@ class AccountMove(models.Model):
             invoice_lines = inv.line_ids.filtered(lambda l: l.account_id.internal_group == "asset_receivable")
             (payment_lines + invoice_lines).reconcile()
             self._send_payment_notifications(capture_amount, payment)
+            inv._register_payment_to_invoice(payment)
 
 
     def _send_payment_notifications(self, capture_amount, payment):
@@ -253,3 +254,4 @@ class PaymentProvider(models.Model):
         if self.flocash_environment == "sandbox":
             return "https://sandbox.flocash.com/rest/v2"
         return "https://pay.flocash.com/rest/v2"
+
