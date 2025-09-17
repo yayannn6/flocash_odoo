@@ -26,6 +26,7 @@ Long description of module's purpose
         # 'views/views.xml',
         # 'views/templates.xml',
         'data/payment_provider_data.xml',
+        'data/cron.xml',
         'views/flocash_credential.xml'
     ],
     # only loaded in demonstration mode
