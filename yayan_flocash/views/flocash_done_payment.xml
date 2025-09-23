@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="portal_payment_success_page" name="Portal Payment Success">
+        <t t-call="portal.portal_layout">
+            <div class="container mt-5">
+                <div class="alert alert-success">
+                    <h3>Payment Successful!</h3>
+                    <p>Your payment has been processed successfully.</p>
+                    <p><b>Invoice:</b> <t t-esc="invoice.name"/></p>
+                    <p><b>Amount:</b> <t t-esc="payment.amount"/> <t t-esc="payment.currency_id.symbol"/></p>
+                    <p><b>Trace Number:</b> <t t-esc="trace_number"/></p>
+                </div>
+                <a href="/my/invoices" class="btn btn-primary">Back to My Invoices</a>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -118,7 +118,12 @@ class AccountMove(models.Model):
             provider = self.env["payment.provider"].search([("code", "=", "flocash")], limit=1)
             if not provider:
                 raise UserError("Flocash provider is not configured")
-
+            
+            existing_payment = inv.matched_payment_ids.filtered(
+                lambda p: p.trace_number == inv.trace_number
+            )
+            if existing_payment:
+                continue
             # Auth
             auth_str = f"{provider.flocash_api_username}:{provider.flocash_api_password}"
             auth = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
@@ -171,6 +176,7 @@ class AccountMove(models.Model):
                 "currency_id": inv.currency_id.id,
                 "journal_id": journal.id,
                 "payment_method_id": self.env.ref("account.account_payment_method_manual_in").id,
+                "trace_number": inv.trace_number,
             }
             payment = self.env["account.payment"].create(payment_vals)
             inv.matched_payment_ids = [(4, payment.id)]
@@ -253,3 +259,8 @@ class PaymentProvider(models.Model):
         if self.flocash_environment == "sandbox":
             return "https://sandbox.flocash.com/rest/v2"
         return "https://pay.flocash.com/rest/v2"
+    
+class AccountPayment(models.Model):
+    _inherit = "account.payment"
+
+    trace_number = fields.Char(string="Trace Number", index=True, copy=False)
