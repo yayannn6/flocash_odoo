@@ -6,7 +6,6 @@ import logging
 
 _logger = logging.getLogger(__name__)
 
-
 class AccountMove(models.Model):
     _inherit = "account.move"
 
@@ -111,7 +110,6 @@ class AccountMove(models.Model):
                 raise ValueError(f"Flocash error {response.status_code}: {response.text}")
 
     def action_check_flocash_payment(self):
-        """Cek pembayaran Flocash dan buat pembayaran jika captureAmount > 0"""
         for inv in self:
             if not inv.trace_number:
                 continue  # Skip jika tidak ada trace_number
@@ -119,12 +117,14 @@ class AccountMove(models.Model):
             provider = self.env["payment.provider"].search([("code", "=", "flocash")], limit=1)
             if not provider:
                 raise UserError("Flocash provider is not configured")
-            
+
+            # Cek apakah payment dengan trace_number ini sudah ada
             existing_payment = inv.matched_payment_ids.filtered(
                 lambda p: p.trace_number == inv.trace_number
             )
             if existing_payment:
                 continue
+
             # Auth
             auth_str = f"{provider.flocash_api_username}:{provider.flocash_api_password}"
             auth = base64.b64encode(auth_str.encode("utf-8")).decode("utf-8")
@@ -151,7 +151,6 @@ class AccountMove(models.Model):
 
             # Ambil captureAmount
             capture_amount = float(order_data.get("capturedAmount") or 0.0)
-
             if capture_amount <= 0:
                 raise UserError("Belum ada pembayaran yang dicapture di Flocash.")
 
@@ -183,11 +182,19 @@ class AccountMove(models.Model):
             inv.matched_payment_ids = [(4, payment.id)]
             payment.action_post()
             payment.action_validate()
-            # Rekonsiliasi otomatis
-            payment_lines = payment.move_id.line_ids.filtered(lambda l: l.account_id.internal_group == "asset_receivable")
-            invoice_lines = inv.line_ids.filtered(lambda l: l.account_id.internal_group == "asset_receivable")
-            (payment_lines + invoice_lines).reconcile()
+
+            # 🔑 Rekonsiliasi otomatis (cek account_id biar match)
+            receivable_accounts = inv.line_ids.filtered(lambda l: l.account_id.internal_group == "asset_receivable").mapped("account_id")
+            lines_to_reconcile = (
+                payment.move_id.line_ids.filtered(lambda l: l.account_id in receivable_accounts)
+                + inv.line_ids.filtered(lambda l: l.account_id.internal_group == "asset_receivable")
+            )
+            if lines_to_reconcile:
+                lines_to_reconcile.reconcile()
+
+            # Kirim notifikasi/email
             self._send_payment_notifications(capture_amount, payment)
+
 
 
     def _send_payment_notifications(self, capture_amount, payment):
