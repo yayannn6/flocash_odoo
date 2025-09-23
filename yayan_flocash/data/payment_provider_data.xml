@@ -6,5 +6,6 @@
       <field name="state">test</field>
       <field name="company_id" ref="base.main_company"/>
     </record>
+    
   </data>
 </odoo>
