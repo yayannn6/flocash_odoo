@@ -72,10 +72,11 @@ class FlocashCallback(http.Controller):
             if template:
                 template.sudo().send_mail(invoice.id, force_send=True)
 
-            # Tampilkan page sukses
-            return request.render("yayan_flocash.portal_payment_success_page", {
-                "invoice": invoice,
-                "payment": payment,
+            return request.make_json_response({
+                "status": "ok",
+                "message": "Payment processed",
+                "invoice": invoice.name,
+                "amount": amount,
                 "trace_number": trace_number,
             })
 

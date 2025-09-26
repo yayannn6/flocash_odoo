@@ -29,7 +29,6 @@ Long description of module's purpose
         'data/cron.xml',
         'views/flocash_credential.xml',
         'views/flocash_done_payment.xml',
-        
     ],
     # only loaded in demonstration mode
     'demo': [
